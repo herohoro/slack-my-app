@@ -1,8 +1,0 @@
-{
-  "name": "slack-ss-app",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/herohoro/slack-my-app.git",
-  "author": "herohoro <mtwd.office.25@gmail.com>",
-  "license": "MIT"
-}
