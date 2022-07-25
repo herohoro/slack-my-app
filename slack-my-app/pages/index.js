@@ -20,16 +20,24 @@ export default function Home({ contents }) {
       </Head>
 
       <main>
-        {contents.map((content) => {
-          return (
-            <div>
-              <p>{content.date}</p>
-              <h3>{content.name}</h3>
+        <div className={styles.header}>チャンネル名</div>
+        <div className={styles.scroll}>
+          {/* {const target = document.getElementById('scroll-inner');
+          target.scrollIntoView(false);
+} */}
+          <div className={styles.scrollInner}>
+            {contents.map((content) => {
+              return (
+                <div>
+                  <p>{content.date}</p>
+                  <h3>{content.name}</h3>
 
-              <p>{content.content}</p>
-            </div>
-          );
-        })}
+                  <p>{content.content}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </main>
     </div>
   );
