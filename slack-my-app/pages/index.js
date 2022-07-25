@@ -17,19 +17,35 @@ export default function Home({ contents }) {
       <Head>
         <title>Next.js Spreadsheet CMS</title>
         <meta name="description" content="Next.js Spreadsheet CMS" />
+        {/* <script>
+          if (typeof window === "object")
+          {window.addEventListener("DOMContentLoaded", () => {
+            let target = document.getElementById("scrollInner");
+            target.scrollIntoView(false);
+          })}
+        </script> */}
       </Head>
 
       <main>
-        {contents.map((content) => {
-          return (
-            <div>
-              <p>{content.date}</p>
-              <h3>{content.name}</h3>
+        <div className={styles.header}>チャンネル名</div>
+        <div className={styles.scroll}>
+          {/* {const target = document.getElementById('scroll-inner');
+          target.scrollIntoView(false);
+} */}
+          {/* <div id="scrollInner"> */}
+          <div>
+            {contents.map((content) => {
+              return (
+                <div>
+                  <p>{content.date}</p>
+                  <h3>{content.name}</h3>
 
-              <p>{content.content}</p>
-            </div>
-          );
-        })}
+                  <p>{content.content}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </main>
     </div>
   );

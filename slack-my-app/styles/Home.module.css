@@ -3,7 +3,7 @@
 }
 
 .main {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   padding: 4rem 0;
   flex: 1;
   display: flex;
@@ -11,7 +11,19 @@
   justify-content: center;
   align-items: center;
 }
-
+.scroll {
+  overflow-y: scroll;
+  width: 80%;
+  height: 500px;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 5px 20px;
+}
+.header {
+  min-height: 50px;
+  text-align: center;
+  margin-top: 20px;
+}
 .footer {
   display: flex;
   flex: 1;
