@@ -17,6 +17,13 @@ export default function Home({ contents }) {
       <Head>
         <title>Next.js Spreadsheet CMS</title>
         <meta name="description" content="Next.js Spreadsheet CMS" />
+        {/* <script>
+          if (typeof window === "object")
+          {window.addEventListener("DOMContentLoaded", () => {
+            let target = document.getElementById("scrollInner");
+            target.scrollIntoView(false);
+          })}
+        </script> */}
       </Head>
 
       <main>
@@ -25,7 +32,8 @@ export default function Home({ contents }) {
           {/* {const target = document.getElementById('scroll-inner');
           target.scrollIntoView(false);
 } */}
-          <div className={styles.scrollInner}>
+          {/* <div id="scrollInner"> */}
+          <div>
             {contents.map((content) => {
               return (
                 <div>
