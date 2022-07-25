@@ -11,12 +11,34 @@ const getSheets = () => {
   );
   return google.sheets({ version: "v4", auth: jwt });
 };
+// 本当はシート名自体を取得したい....
+export const getChannels = async () => {
+  const sheets = getSheets();
+  const sheetsName = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range: "シート1",
+  });
+  const rows = sheetsName.data.values;
+  if (rows) {
+    return rows.slice(1).map((row) => {
+      return {
+        name: row[1],
+      };
+    });
+  }
+
+  return [];
+};
+// for文でチャンネル名を一気に取得したい
+
 // 【予定】シートを複数取得できるようにする
 export const getContents = async () => {
   const sheets = getSheets();
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SPREADSHEET_ID,
-    range: "000_皆さんへ",
+    // rangeの値を配列sheets名で回すのかも....
+    // range: "000_皆さんへ",
+    range: "雑談",
   });
   const rows = response.data.values;
   if (rows) {
