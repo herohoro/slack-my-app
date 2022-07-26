@@ -33,8 +33,9 @@ export default function Home({ contents, channels }) {
             {/* <ul> */}
             {/* 値が空でなければliタグにしたい.... */}
             <div className={styles.scroll}>
+              {console.log({ channels })}
               {channels.map((channel) => {
-                return <p>{channel.name}</p>;
+                return <p>{channel}</p>;
               })}
               {/* </ul> */}
             </div>
