@@ -14,18 +14,20 @@ const getSheets = () => {
 // 本当はシート名自体を取得したい....
 export const getChannels = async () => {
   const sheets = getSheets();
-  const rangeName = "A2:B";
+  const rangeName = "B2:C";
   const sheetsName = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SPREADSHEET_ID,
     range: rangeName,
   });
   const rows = sheetsName.data.values;
+  console.log(rows);
   if (rows) {
     return rows
       .slice(1)
       .sort()
+      .filter((name) => name[1] !== "TRUE" && name[0] !== "")
       .map((row) => {
-        return row[1];
+        return row[0];
       });
   }
 
@@ -39,8 +41,8 @@ export const getContents = async () => {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SPREADSHEET_ID,
     // rangeの値を配列sheets名で回すのかも....
-    // range: "000_皆さんへ",
-    range: "020_zoom報告",
+    range: "000_皆さんへ",
+    // range: "020_zoom報告",
   });
   const rows = response.data.values;
   if (rows) {
