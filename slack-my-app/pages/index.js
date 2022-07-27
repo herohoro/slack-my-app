@@ -50,9 +50,11 @@ export default function Home({ contents, channels }) {
                 {contents.map((content) => {
                   return (
                     <div>
-                      <p>{content.date}</p>
-                      <h3>{content.name}</h3>
-                      <p>{content.content}</p>
+                      <div className={styles.textcols}>
+                        <p>{content.name}</p>
+                        <p>{content.date}</p>
+                      </div>
+                      <p className={styles.textContent}>{content.content}</p>
                     </div>
                   );
                 })}
