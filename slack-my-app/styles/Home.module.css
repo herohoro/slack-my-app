@@ -29,6 +29,13 @@
   margin: 0 auto;
   padding: 5px 20px;
 }
+.scroll > ul {
+  padding-left: 5px;
+}
+.scroll > ul > li {
+  padding: 5px;
+  list-style: "#";
+}
 .header {
   min-height: 50px;
   text-align: center;
