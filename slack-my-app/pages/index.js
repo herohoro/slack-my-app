@@ -30,14 +30,13 @@ export default function Home({ contents, channels }) {
       <main>
         <div className={styles.wrapper}>
           <div className={styles.sidebar}>
-            {/* <ul> */}
-            {/* 値が空でなければliタグにしたい.... */}
             <div className={styles.scroll}>
-              {console.log({ channels })}
-              {channels.map((channel) => {
-                return <p>{channel}</p>;
-              })}
-              {/* </ul> */}
+              <ul>
+                {console.log({ channels })}
+                {channels.map((channel) => {
+                  return <li key={channel.id}>{channel}</li>;
+                })}
+              </ul>
             </div>
           </div>
           <div className={styles.main}>
