@@ -2,6 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
 import { getContents, getChannels } from "../lib/spreadsheet";
+import emoji from "../lib/emoji_unicode.json";
 
 export async function getStaticProps() {
   const contents = await getContents();
@@ -41,6 +42,13 @@ export default function Home({ contents, channels }) {
             </div>
           </div>
           <div className={styles.main}>
+            {console.log(emoji["100"])}
+            <p>{typeof emoji["100"]}</p>
+            <p>{emoji["five"]}</p>
+
+            <p>&#x1F4AF;</p>
+            <div>&#x1F641;:slightly_frowning_face</div>
+
             <div className={styles.header}>チャンネル名</div>
             <div className={styles.scroll}>
               {/* {const target = document.getElementById('scroll-inner');
