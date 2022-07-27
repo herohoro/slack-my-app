@@ -30,14 +30,13 @@ export default function Home({ contents, channels }) {
       <main>
         <div className={styles.wrapper}>
           <div className={styles.sidebar}>
-            {/* <ul> */}
-            {/* 値が空でなければliタグにしたい.... */}
             <div className={styles.scroll}>
-              {console.log({ channels })}
-              {channels.map((channel) => {
-                return <p>{channel}</p>;
-              })}
-              {/* </ul> */}
+              <ul>
+                {console.log({ channels })}
+                {channels.map((channel) => {
+                  return <li key={channel.id}>{channel}</li>;
+                })}
+              </ul>
             </div>
           </div>
           <div className={styles.main}>
@@ -51,9 +50,11 @@ export default function Home({ contents, channels }) {
                 {contents.map((content) => {
                   return (
                     <div>
-                      <p>{content.date}</p>
-                      <h3>{content.name}</h3>
-                      <p>{content.content}</p>
+                      <div className={styles.textcols}>
+                        <p>{content.name}</p>
+                        <p>{content.date}</p>
+                      </div>
+                      <p className={styles.textContent}>{content.content}</p>
                     </div>
                   );
                 })}
