@@ -39,8 +39,8 @@ export const getContents = async () => {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SPREADSHEET_ID,
     // rangeの値を配列sheets名で回すのかも....
-    // range: "000_皆さんへ",
-    range: "020_zoom報告",
+    range: "000_皆さんへ",
+    // range: "020_zoom報告",
   });
   const rows = response.data.values;
   if (rows) {
