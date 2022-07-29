@@ -19,11 +19,9 @@ p {
 }
 
 @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
   body {
     color: rgb(50, 58, 72);
-    background: rgb(78, 82, 88);
+    /* background: rgb(78, 82, 88); */
+    background: whitesmoke;
   }
 }
