@@ -1,31 +1,49 @@
+import { getChannels, getContentByChannel } from "../../lib/spreadsheet";
+import styles from "../../styles/Home.module.css";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-import { getContents, getChannels } from "../lib/spreadsheet";
-
-export async function getStaticProps() {
-  const contents = await getContents();
+// 今はコンポネントしないで記述する。
+export async function getStaticPaths() {
   const channels = await getChannels();
+
   return {
-    props: { contents, channels },
-    revalidate: 3600,
+    paths: channels.map((channel) => `/channel/${channel}`),
+    fallback: "blocking",
   };
 }
 
-export default function Home({ contents, channels }) {
+export async function getStaticProps({ params: { channel } }) {
+  const content = await getContentByChannel(channel);
+
+  if (!content) {
+    console.log(`Failed to find post for channel: ${channel}`);
+    return {
+      props: {
+        redirect: "/channel",
+      },
+      revalidate: 30,
+    };
+  }
+
+  const channels = await getChannels();
+
+  return {
+    props: {
+      content,
+      channels,
+    },
+    revalidate: 60,
+  };
+}
+export default function RenderContent({ content, channels }) {
+  const router = useRouter();
   return (
     <div className={styles.container}>
       <Head>
-        <title>Next.js Spreadsheet CMS</title>
+        <title>Spreadsheet CMS</title>
         <meta name="description" content="Next.js Spreadsheet CMS" />
-        {/* <script>
-          if (typeof window === "object")
-          {window.addEventListener("DOMContentLoaded", () => {
-            let target = document.getElementById("scrollInner");
-            target.scrollIntoView(false);
-          })}
-        </script> */}
       </Head>
 
       <main>
@@ -44,19 +62,23 @@ export default function Home({ contents, channels }) {
                       >
                         <a>{channel}</a>
                       </Link>
-
-                      {console.log(id + "::" + channel)}
+                      {/* {console.log(id + "::" + channel)} */}
                     </li>
                   );
                 })}
+                {console.log("GET!!!____chennel")}
               </ul>
             </div>
           </div>
           <div className={styles.main}>
-            <div className={styles.header}># 000_皆さんへ</div>
+            <div className={styles.header}>
+              {decodeURI(router.asPath).substring(
+                decodeURI(router.asPath).lastIndexOf("/") + 1
+              )}
+            </div>
             <div className={styles.scroll}>
               <div>
-                {contents.map((post) => {
+                {content.map((post) => {
                   return (
                     <div>
                       <div className={styles.textcols}>
@@ -67,6 +89,7 @@ export default function Home({ contents, channels }) {
                     </div>
                   );
                 })}
+                {console.log("GET!!!____content")}
               </div>
             </div>
           </div>
