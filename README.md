@@ -24,8 +24,8 @@ slack のデータを GAS を使って Google スプレッドシートへ転記�
 
 # 導入
 
-Google スプレッドシートの内容を取得して slack っぽく Next.js で表示します。
-⭐ 　生成したスプレッドシートの閲覧権限に GCP_SERVICEACCOUNT_EMAIL を設定  
+Google スプレッドシートの内容を取得して slack っぽく Next.js で表示します。  
+⚠　生成したスプレッドシートの閲覧権限に GCP_SERVICEACCOUNT_EMAIL を設定  
 [詳細解説](https://qiita.com/suzuki_sh/items/7de6a93a87fa21e3e773)
 
 以下の環境変数をサーバーに登録してください。
