@@ -11,7 +11,8 @@ const getSheets = () => {
   );
   return google.sheets({ version: "v4", auth: jwt });
 };
-// 本当はシート名自体を取得したい....
+
+// シート１をチャンネル一覧として取得
 export const getChannels = async () => {
   const sheets = getSheets();
   const rangeName = "B2:C";
@@ -20,7 +21,7 @@ export const getChannels = async () => {
     range: rangeName,
   });
   const rows = sheetsName.data.values;
-  console.log(rows);
+  // console.log(rows);
   if (rows) {
     return rows
       .slice(1)
@@ -33,9 +34,28 @@ export const getChannels = async () => {
 
   return [];
 };
-// for文でチャンネル名を一気に取得したい
 
-// 【予定】シートを複数取得できるようにする
+// チャンネル名を変数にしてそこから内容を取得する
+export const getContentByChannel = async (channel) => {
+  const sheets = getSheets();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range: channel,
+  });
+  const rows = response.data.values;
+  if (rows) {
+    return rows.slice(1).map((row) => {
+      return {
+        date: row[0],
+        name: row[1],
+        post: row[2],
+      };
+    });
+  }
+  return [];
+};
+
+// topページはいつも「000_皆さんへ」のチャンネル
 export const getContents = async () => {
   const sheets = getSheets();
   const response = await sheets.spreadsheets.values.get({
@@ -51,7 +71,7 @@ export const getContents = async () => {
         // title: row[1],
         date: row[0],
         name: row[1],
-        content: row[2],
+        post: row[2],
       };
     });
   }
