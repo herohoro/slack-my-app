@@ -45,7 +45,7 @@ export default function Home({ contents, channels }) {
                         <a>{channel}</a>
                       </Link>
 
-                      {console.log(id + "::" + channel)}
+                      {/* {console.log(id + "::" + channel)} */}
                     </li>
                   );
                 })}
