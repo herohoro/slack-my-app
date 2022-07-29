@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import Link from "next/link";
 
 import { getContents, getChannels } from "../lib/spreadsheet";
 
@@ -32,29 +33,37 @@ export default function Home({ contents, channels }) {
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
-                {console.log({ channels })}
-                {channels.map((channel) => {
-                  return <li key={channel.id}>{channel}</li>;
+                {/* {console.log({ channels })} */}
+                {channels.map((channel, id) => {
+                  return (
+                    <li key={id}>
+                      <Link
+                        href="/channel/[channel]"
+                        as={`/channel/${channel}`}
+                        passHref
+                      >
+                        <a>{channel}</a>
+                      </Link>
+
+                      {console.log(id + "::" + channel)}
+                    </li>
+                  );
                 })}
               </ul>
             </div>
           </div>
           <div className={styles.main}>
-            <div className={styles.header}>チャンネル名</div>
+            <div className={styles.header}># 000_皆さんへ</div>
             <div className={styles.scroll}>
-              {/* {const target = document.getElementById('scroll-inner');
-          target.scrollIntoView(false);
-} */}
-              {/* <div id="scrollInner"> */}
               <div>
-                {contents.map((content) => {
+                {contents.map((post) => {
                   return (
                     <div>
                       <div className={styles.textcols}>
-                        <p>{content.name}</p>
-                        <p>{content.date}</p>
+                        <p>{post.name}</p>
+                        <p>{post.date}</p>
                       </div>
-                      <p className={styles.textContent}>{content.content}</p>
+                      <p className={styles.textContent}>{post.post}</p>
                     </div>
                   );
                 })}
