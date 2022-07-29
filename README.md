@@ -1,3 +1,7 @@
+slackフリープランで90日以降に見れなくなってしまう過去の投稿を見返すためのアプリ
+
+<img width="1230" alt="スクリーンショット 2022-07-30 4 40 14" src="https://user-images.githubusercontent.com/24947347/181832576-ad59d2c7-62fd-43e6-8e5d-5eefa2704801.png">
+
 # 改良版
 
 サンプルコードをコピペして作成した Google スプレッドシートから閲覧用に用意したスプレッドシートを無くして web アプリにしたものです。  
@@ -16,10 +20,12 @@ slack のデータを GAS を使って Google スプレッドシートへ転記�
 5. 生成したスプレッドシートを開き、拡張機能から GAS を開き、本リポジトリの set-up ディレクトリにある【もくじ.gs】のコードをコピペ
 6. シート 1 の B2 セルをアクティブにしてからもくじ.gs を実行
 
+<img width="812" alt="スクリーンショット 2022-07-30 3 55 05" src="https://user-images.githubusercontent.com/24947347/181832601-a42ef765-f8f3-4424-bad2-b5325664fdc2.png">
+
 # 導入
 
-Google スプレッドシートの内容を取得して slack っぽく Next.js で表示します。
-⭐ 　生成したスプレッドシートの閲覧権限に GCP_SERVICEACCOUNT_EMAIL を設定  
+Google スプレッドシートの内容を取得して slack っぽく Next.js で表示します。  
+⚠　生成したスプレッドシートの閲覧権限に GCP_SERVICEACCOUNT_EMAIL を設定  
 [詳細解説](https://qiita.com/suzuki_sh/items/7de6a93a87fa21e3e773)
 
 以下の環境変数をサーバーに登録してください。
