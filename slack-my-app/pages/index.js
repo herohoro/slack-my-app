@@ -56,17 +56,7 @@ export default function Home({ contents, channels }) {
             <div className={styles.header}># 000_皆さんへ</div>
             <div className={styles.scroll}>
               <div>
-                {contents.map((post) => {
-                  return (
-                    <div className={styles.post}>
-                      <div className={styles.textcols}>
-                        <p>{post.name}</p>
-                        <p>{post.date}</p>
-                      </div>
-                      <p className={styles.textContent}>{post.post}</p>
-                    </div>
-                  );
-                })}
+                <p>左のメニューからチャンネルを選んでください</p>
               </div>
             </div>
           </div>
