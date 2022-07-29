@@ -1,5 +1,5 @@
 // 元の解説記事:　https://best-cloud.jp/slack-message-log-auto-save-gas/
-
+// メンバーID→メンバー名、シート名をチャンネル名(ID)→チャンネル名のみに修正しました
 function Run() {
   SetProperties();
   const FOLDER_NAME = "SlackLog_Save";

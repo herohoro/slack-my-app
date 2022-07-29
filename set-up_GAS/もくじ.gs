@@ -1,5 +1,5 @@
 // 元の解説記事：https://qiita.com/okNirvy/items/d1a2f4918cff8e63dcac
-// *****　必ずシート1のA2セルをアクティブにしてから実行してください
+// *****　必ずシート1のB2セルをアクティブにしてから実行してください
 function PutLinks() {
   // スプレッドシート内の全シートとスプレッドシートのID
   var sheets = SpreadsheetApp.getActive().getSheets();
