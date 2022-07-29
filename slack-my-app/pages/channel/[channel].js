@@ -39,6 +39,9 @@ export async function getStaticProps({ params: { channel } }) {
 }
 export default function RenderContent({ content, channels }) {
   const router = useRouter();
+  const activeName = decodeURI(router.asPath).substring(
+    decodeURI(router.asPath).lastIndexOf("/") + 1
+  );
   return (
     <div className={styles.container}>
       <Head>
@@ -54,7 +57,10 @@ export default function RenderContent({ content, channels }) {
                 {/* {console.log({ channels })} */}
                 {channels.map((channel, id) => {
                   return (
-                    <li key={id}>
+                    <li
+                      key={id}
+                      className={activeName === channel ? "active" : null}
+                    >
                       <Link
                         href="/channel/[channel]"
                         as={`/channel/${channel}`}
@@ -71,16 +77,12 @@ export default function RenderContent({ content, channels }) {
             </div>
           </div>
           <div className={styles.main}>
-            <div className={styles.header}>
-              {decodeURI(router.asPath).substring(
-                decodeURI(router.asPath).lastIndexOf("/") + 1
-              )}
-            </div>
+            <div className={styles.header}>{activeName}</div>
             <div className={styles.scroll}>
               <div>
                 {content.map((post) => {
                   return (
-                    <div>
+                    <div className={styles.post}>
                       <div className={styles.textcols}>
                         <p>{post.name}</p>
                         <p>{post.date}</p>

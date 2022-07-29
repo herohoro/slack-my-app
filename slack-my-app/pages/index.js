@@ -17,7 +17,7 @@ export default function Home({ contents, channels }) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Next.js Spreadsheet CMS</title>
+        <title>Spreadsheet CMS</title>
         <meta name="description" content="Next.js Spreadsheet CMS" />
         {/* <script>
           if (typeof window === "object")
@@ -58,7 +58,7 @@ export default function Home({ contents, channels }) {
               <div>
                 {contents.map((post) => {
                   return (
-                    <div>
+                    <div className={styles.post}>
                       <div className={styles.textcols}>
                         <p>{post.name}</p>
                         <p>{post.date}</p>
