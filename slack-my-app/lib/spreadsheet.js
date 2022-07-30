@@ -44,31 +44,8 @@ export const getContentByChannel = async (channel) => {
   });
   const rows = response.data.values;
   if (rows) {
-    return rows.slice(1).map((row) => {
+    return rows.slice(-10).map((row) => {
       return {
-        date: row[0],
-        name: row[1],
-        post: row[2],
-      };
-    });
-  }
-  return [];
-};
-
-// topページはいつも「000_皆さんへ」のチャンネル
-export const getContents = async () => {
-  const sheets = getSheets();
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SPREADSHEET_ID,
-    // rangeの値を配列sheets名で回すのかも....
-    range: "general",
-    // range: "020_zoom報告",
-  });
-  const rows = response.data.values;
-  if (rows) {
-    return rows.slice(1).map((row) => {
-      return {
-        // title: row[1],
         date: row[0],
         name: row[1],
         post: row[2],
