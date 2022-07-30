@@ -55,12 +55,9 @@ export default function RenderContent({ content, channels }) {
             <div className={styles.scroll}>
               <ul>
                 {/* {console.log({ channels })} */}
-                {channels.map((channel, id) => {
+                {channels.map((channel) => {
                   return (
-                    <li
-                      key={id}
-                      className={activeName === channel ? "active" : null}
-                    >
+                    <li className={activeName === channel ? "active" : null}>
                       <Link
                         href="/channel/[channel]"
                         as={`/channel/${channel}`}
@@ -68,6 +65,7 @@ export default function RenderContent({ content, channels }) {
                       >
                         <a>{channel}</a>
                       </Link>
+
                       {/* {console.log(id + "::" + channel)} */}
                     </li>
                   );

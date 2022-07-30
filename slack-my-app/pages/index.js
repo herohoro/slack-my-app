@@ -2,18 +2,17 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
-import { getContents, getChannels } from "../lib/spreadsheet";
+import { getChannels } from "../lib/spreadsheet";
 
 export async function getStaticProps() {
-  const contents = await getContents();
   const channels = await getChannels();
   return {
-    props: { contents, channels },
+    props: { channels },
     revalidate: 3600,
   };
 }
 
-export default function Home({ contents, channels }) {
+export default function Home({ channels }) {
   return (
     <div className={styles.container}>
       <Head>
