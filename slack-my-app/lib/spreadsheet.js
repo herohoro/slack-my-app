@@ -1,4 +1,5 @@
 import { GoogleApis, google } from "googleapis";
+const postIndexCache = require("./post-index-cache.js");
 
 const getSheets = () => {
   const googleapis = new GoogleApis();
@@ -37,23 +38,33 @@ export const getChannels = async () => {
 
 //仮で末尾10件取得して画面遷移を早くさせる
 export const getContentByChannel = async (channel) => {
-  const sheets = getSheets();
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SPREADSHEET_ID,
-    range: channel,
-  });
-  const rows = response.data.values;
-  if (rows) {
-    return rows.slice(-10).map((row, id) => {
-      return {
-        id: id + 1,
-        date: row[0],
-        name: row[1],
-        post: row[2],
-      };
+  let results = [];
+
+  if (postIndexCache.exists()) {
+    // キャッシュがある場合に参照する
+    results = postIndexCache.get();
+    console.log("Found cached posts.");
+  } else {
+    const sheets = getSheets();
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: channel,
     });
+    const rows = response.data.values;
+    if (rows) {
+      return rows.slice(-5).map((row, id) => {
+        console.log(row);
+        return {
+          id: id + 1,
+          date: row[0],
+          name: row[1],
+          post: row[2],
+        };
+      });
+    }
+
+    return [];
   }
-  return [];
 };
 //まずはじめの投稿を何かを取得する作戦
 // はじめの投稿と取得した10件ターンとで重複があったらreadmoreボタンを非表示にする
