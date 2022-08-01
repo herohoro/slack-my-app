@@ -52,7 +52,7 @@ exports.set = async function () {
         });
     }
 
-    return [].map((channel) => _channel(channel));
+    return [].map((channel) => _content(channel));
   };
   // チャンネル１件ずつ取り出す
   let allChannelContent = [];
@@ -79,10 +79,10 @@ exports.set = async function () {
   // 各チャンネル内にある投稿内容は配列[]になってまとまっているがチャンネル間はまとめられていない。。。
   allChannelContent = allChannelContent.concat(channels);
 
-  fs.writeFileSync(POST_INDEX_CACHE, JSON.stringify(allChannelContent));
-  console.log(
-    `Cached ${allChannelContent.length} posts into ${POST_INDEX_CACHE}`
-  );
+  //   fs.writeFileSync(POST_INDEX_CACHE, JSON.stringify(allChannelContent));
+  //   console.log(
+  //     `Cached ${allChannelContent.length} posts into ${POST_INDEX_CACHE}`
+  //   );
   retrun;
 };
 exports.expire = function () {

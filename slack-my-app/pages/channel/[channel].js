@@ -3,6 +3,7 @@ import {
   getContentByChannel,
   // getReadmoreContent,
   getFirstPost,
+  // cacheTest,
 } from "../../lib/spreadsheet";
 import styles from "../../styles/Home.module.css";
 import Head from "next/head";
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
     fallback: "blocking",
   };
 }
-
+// cacheTestを読み込むとエラーになる
 export async function getStaticProps({ params: { channel, pageSize } }) {
   const content = await getContentByChannel(channel);
   // const readmore = await getReadmoreContent(channel);
@@ -35,6 +36,7 @@ export async function getStaticProps({ params: { channel, pageSize } }) {
   }
 
   const channels = await getChannels();
+  // const cache = cacheTest();
 
   return {
     props: {
@@ -42,6 +44,7 @@ export async function getStaticProps({ params: { channel, pageSize } }) {
       channels,
       // readmore,
       first,
+      // cache,
     },
     revalidate: 60,
   };
@@ -64,7 +67,7 @@ export default function RenderContent({ content, channels, first }) {
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
-                {/* {console.log({ channels })} */}
+                {console.log({ channels })}
                 {channels.map((channel) => {
                   return (
                     <li className={activeName === channel ? "active" : null}>
@@ -76,7 +79,7 @@ export default function RenderContent({ content, channels, first }) {
                         <a>{channel}</a>
                       </Link>
 
-                      {/* {console.log(id + "::" + channel)} */}
+                      {console.log(channel)}
                     </li>
                   );
                 })}
@@ -86,10 +89,11 @@ export default function RenderContent({ content, channels, first }) {
           </div>
           <div className={styles.main}>
             <div className={styles.header}>{activeName}</div>
+            {/* {cache} */}
             <div className={styles.scroll}>
               <div>
                 <p>はじめの投稿</p>
-                {console.log(first)}
+                {/* {console.log(first)} */}
                 {first.map((post) => {
                   return (
                     <div className={styles.post}>
@@ -109,6 +113,7 @@ export default function RenderContent({ content, channels, first }) {
                 {<button type="button">Read more!!</button>}
 
                 {content.map((post) => {
+                  // console.log(content);
                   return (
                     <div className={styles.post}>
                       <p>{post.id}</p>
@@ -117,6 +122,7 @@ export default function RenderContent({ content, channels, first }) {
                         <p>{post.date}</p>
                       </div>
                       <p className={styles.textContent}>{post.post}</p>
+                      {/* {console.log(post)} */}
                     </div>
                   );
                 })}

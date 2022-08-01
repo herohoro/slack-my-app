@@ -40,31 +40,31 @@ export const getChannels = async () => {
 export const getContentByChannel = async (channel) => {
   let results = [];
 
-  if (postIndexCache.exists()) {
-    // キャッシュがある場合に参照する
-    results = postIndexCache.get();
-    console.log("Found cached posts.");
-  } else {
-    const sheets = getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      range: channel,
+  // if (postIndexCache.exists()) {
+  //   // キャッシュがある場合に参照する
+  //   results = postIndexCache.get();
+  //   console.log("Found cached posts.");
+  // } else {
+  const sheets = getSheets();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range: channel,
+  });
+  const rows = response.data.values;
+  if (rows) {
+    return rows.slice(-3).map((row, id) => {
+      // console.log(row);
+      return {
+        id: id + 1,
+        date: row[0],
+        name: row[1],
+        post: row[2],
+      };
     });
-    const rows = response.data.values;
-    if (rows) {
-      return rows.slice(-5).map((row, id) => {
-        console.log(row);
-        return {
-          id: id + 1,
-          date: row[0],
-          name: row[1],
-          post: row[2],
-        };
-      });
-    }
-
-    return [];
   }
+
+  return [];
+  // }
 };
 //まずはじめの投稿を何かを取得する作戦
 // はじめの投稿と取得した10件ターンとで重複があったらreadmoreボタンを非表示にする
@@ -113,3 +113,56 @@ export const getFirstPost = async (channel, pageSize = 1) => {
 //   }
 //   return [];
 // };
+export const cacheTest = () => {
+  const channels = async () => {
+    const sheets = getSheets();
+    const rangeName = "B2:C";
+    const sheetsName = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: rangeName,
+    });
+    const rows = sheetsName.data.values;
+    // console.log(rows);
+    if (rows) {
+      return rows
+        .slice(1)
+        .sort()
+        .filter((name) => name[1] !== "TRUE" && name[0] !== "")
+        .map((row) => {
+          return row[0];
+        });
+    }
+
+    return [].map((channel) => _content(channel));
+  };
+  // チャンネル１件ずつ取り出す
+  let allChannelContent = [];
+  const _content = async (channel) => {
+    const sheets = getSheets();
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: channel,
+    });
+    const rows = response.data.values;
+
+    if (rows) {
+      return rows.slice().map((row, id) => {
+        return {
+          id: id + 1,
+          date: row[0],
+          name: row[1],
+          post: row[2],
+        };
+      });
+    }
+    return [];
+  };
+  // 各チャンネル内にある投稿内容は配列[]になってまとまっているがチャンネル間はまとめられていない。。。
+  allChannelContent = allChannelContent.concat(channels);
+  console.log(allChannelContent);
+  //   fs.writeFileSync(POST_INDEX_CACHE, JSON.stringify(allChannelContent));
+  //   console.log(
+  //     `Cached ${allChannelContent.length} posts into ${POST_INDEX_CACHE}`
+  //   );
+  return;
+};
