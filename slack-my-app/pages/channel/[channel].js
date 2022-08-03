@@ -4,6 +4,8 @@ import {
   // getReadmoreContent,
   getFirstPost,
   // cacheTest,
+  // getPartPost,
+  // getRemainPost,
 } from "../../lib/spreadsheet";
 import styles from "../../styles/Home.module.css";
 import Head from "next/head";
@@ -20,10 +22,14 @@ export async function getStaticPaths() {
   };
 }
 // cacheTestを読み込むとエラーになる
-export async function getStaticProps({ params: { channel, pageSize } }) {
+export async function getStaticProps({
+  params: { channel, startPageSize, pageSize },
+}) {
   const content = await getContentByChannel(channel);
   // const readmore = await getReadmoreContent(channel);
   const first = await getFirstPost(channel, pageSize);
+  // const part = await getFirstPost(channel, startPageSize, pageSize);
+  // const remain = await getRemainPost(channel, pageSize);
 
   if (!content) {
     console.log(`Failed to find post for channel: ${channel}`);
@@ -45,11 +51,19 @@ export async function getStaticProps({ params: { channel, pageSize } }) {
       // readmore,
       first,
       // cache,
+      // part,
+      // remain,
     },
     revalidate: 60,
   };
 }
-export default function RenderContent({ content, channels, first }) {
+export default function RenderContent({
+  content,
+  channels,
+  first,
+  // part,
+  // remain,
+}) {
   const router = useRouter();
   const activeName = decodeURI(router.asPath).substring(
     decodeURI(router.asPath).lastIndexOf("/") + 1
@@ -67,7 +81,7 @@ export default function RenderContent({ content, channels, first }) {
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
-                {console.log({ channels })}
+                {/* {console.log({ channels })} */}
                 {channels.map((channel) => {
                   return (
                     <li className={activeName === channel ? "active" : null}>
@@ -79,7 +93,7 @@ export default function RenderContent({ content, channels, first }) {
                         <a>{channel}</a>
                       </Link>
 
-                      {console.log(channel)}
+                      {/* {console.log(channel)} */}
                     </li>
                   );
                 })}
@@ -110,7 +124,7 @@ export default function RenderContent({ content, channels, first }) {
                 {/* {content.length <= 10 ? null : <button>readmore!!!</button>} */}
                 {console.log(content.length)}
                 {/* 裏で既に全件数取得できていないと10件以上続きがあるかどうかは不明のまま */}
-                {<button type="button">Read more!!</button>}
+                <button type="button">Read more!!</button>
 
                 {content.map((post) => {
                   // console.log(content);

@@ -14,7 +14,7 @@ const getSheets = () => {
 };
 
 // シート１をチャンネル一覧として取得
-export const getChannels = async () => {
+const channels = async () => {
   const sheets = getSheets();
   const rangeName = "B2:C";
   const sheetsName = await sheets.spreadsheets.values.get({
@@ -28,16 +28,14 @@ export const getChannels = async () => {
       .slice(1)
       .sort()
       .filter((name) => name[1] !== "TRUE" && name[0] !== "")
-      .map((row) => {
-        return row[0];
-      });
+      .map((row) => row[0]);
   }
-
   return [];
 };
+export const getChannels = channels;
 
 //仮で末尾10件取得して画面遷移を早くさせる
-export const getContentByChannel = async (channel) => {
+export const getContentByChannel = async (channel, startPageSize = -5) => {
   let results = [];
 
   // if (postIndexCache.exists()) {
@@ -51,8 +49,37 @@ export const getContentByChannel = async (channel) => {
     range: channel,
   });
   const rows = response.data.values;
+  const arr = [];
   if (rows) {
-    return rows.slice(-3).map((row, id) => {
+    return rows.slice(startPageSize).map((row, id) => {
+      // console.log(row);
+      return {
+        id: id + 1,
+        date: row[0],
+        name: row[1],
+        post: row[2],
+      };
+    });
+  }
+  // arr = rows;
+  // console.log(arr);
+  return [];
+  // }
+};
+// little-render_02：-15から-6を取得
+export const getPartPost = async (
+  channel,
+  startPageSize = -15,
+  pageSize = -6
+) => {
+  const sheets = getSheets();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range: channel,
+  });
+  const rows = response.data.values;
+  if (rows) {
+    return rows.slice(startPageSize, pageSize).map((row, id) => {
       // console.log(row);
       return {
         id: id + 1,
@@ -66,6 +93,28 @@ export const getContentByChannel = async (channel) => {
   return [];
   // }
 };
+
+// little-render_04：0から-16までを取得
+export const getRemainPost = async (channel, pageSize = -16) => {
+  const sheets = getSheets();
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range: channel,
+  });
+  const rows = response.data.values;
+  if (rows) {
+    return rows.slice(0, pageSize).map((row) => {
+      return {
+        date: row[0],
+        name: row[1],
+        post: row[2],
+      };
+    });
+  }
+
+  return [];
+};
+
 //まずはじめの投稿を何かを取得する作戦
 // はじめの投稿と取得した10件ターンとで重複があったらreadmoreボタンを非表示にする
 export const getFirstPost = async (channel, pageSize = 1) => {
