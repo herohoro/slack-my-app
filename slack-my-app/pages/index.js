@@ -29,7 +29,6 @@ export default function Home({ channels }) {
 
       <main>
         <div className={styles.wrapper}>
-          <Loading />
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
