@@ -36,8 +36,6 @@ export const getChannels = channels;
 
 //仮で末尾10件取得して画面遷移を早くさせる
 export const getContentByChannel = async (channel, startPageSize = -5) => {
-  let results = [];
-
   // if (postIndexCache.exists()) {
   //   // キャッシュがある場合に参照する
   //   results = postIndexCache.get();
@@ -49,23 +47,26 @@ export const getContentByChannel = async (channel, startPageSize = -5) => {
     range: channel,
   });
   const rows = response.data.values;
-  const arr = [];
+
   if (rows) {
-    return rows.slice(startPageSize).map((row, id) => {
-      // console.log(row);
-      return {
-        id: id + 1,
-        date: row[0],
-        name: row[1],
-        post: row[2],
-      };
-    });
+    return rows.slice(startPageSize).map((item) => _buildContent(item));
   }
-  // arr = rows;
-  // console.log(arr);
+
   return [];
-  // }
 };
+
+function _buildContent(item, id) {
+  const row = item;
+
+  const content = {
+    id: id + 1,
+    date: row[0],
+    name: row[1],
+    post: row[2],
+  };
+  return content;
+}
+
 // little-render_02：-15から-6を取得
 export const getPartPost = async (
   channel,
