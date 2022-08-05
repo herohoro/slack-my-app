@@ -49,13 +49,17 @@ export const getContentByChannel = async (channel, startPageSize = -5) => {
   };
   const response = await sheets.spreadsheets.values.get(params);
   const rows = response.data.values;
-
+  console.log(_contentLength(rows));
   if (rows) {
     return rows.slice(startPageSize).map((item) => _buildContent(item));
   }
 
   return [];
 };
+// チャンネル内の投稿件数を確認する
+function _contentLength(rows) {
+  return rows.length;
+}
 
 function _buildContent(item, id) {
   const row = item;

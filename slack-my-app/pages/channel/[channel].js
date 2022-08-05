@@ -22,9 +22,7 @@ export async function getStaticPaths() {
   };
 }
 // cacheTestを読み込むとエラーになる
-export async function getStaticProps({
-  params: { channel, startPageSize, pageSize },
-}) {
+export async function getStaticProps({ params: { channel } }) {
   const content = await getContentByChannel(channel);
   // const readmore = await getReadmoreContent(channel);
   const first = await getFirstPost(channel);
