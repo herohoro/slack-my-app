@@ -27,7 +27,7 @@ export async function getStaticProps({
 }) {
   const content = await getContentByChannel(channel);
   // const readmore = await getReadmoreContent(channel);
-  const first = await getFirstPost(channel, pageSize);
+  const first = await getFirstPost(channel);
   // const part = await getFirstPost(channel, startPageSize, pageSize);
   // const remain = await getRemainPost(channel, pageSize);
 
@@ -108,17 +108,13 @@ export default function RenderContent({
               <div>
                 <p>はじめの投稿</p>
                 {/* {console.log(first)} */}
-                {first.map((post) => {
-                  return (
-                    <div className={styles.post}>
-                      <div className={styles.textcols}>
-                        <p>{post.name}</p>
-                        <p>{post.date}</p>
-                      </div>
-                      <p className={styles.textContent}>{post.post}</p>
-                    </div>
-                  );
-                })}
+                <div className={styles.post}>
+                  <div className={styles.textcols}>
+                    <p>{first.name}</p>
+                    <p>{first.date}</p>
+                  </div>
+                  <p className={styles.textContent}>{first.post}</p>
+                </div>
 
                 {/* 先頭を含まないターンでは戻るボタンを押したら続きが10件追加されるようにしたい */}
                 {/* {content.length <= 10 ? null : <button>readmore!!!</button>} */}

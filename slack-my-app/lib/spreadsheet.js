@@ -17,10 +17,11 @@ const getSheets = () => {
 const channels = async () => {
   const sheets = getSheets();
   const rangeName = "B2:C";
-  const sheetsName = await sheets.spreadsheets.values.get({
+  const params = {
     spreadsheetId: process.env.SPREADSHEET_ID,
     range: rangeName,
-  });
+  };
+  const sheetsName = await sheets.spreadsheets.values.get(params);
   const rows = sheetsName.data.values;
   // console.log(rows);
   if (rows) {
@@ -42,10 +43,11 @@ export const getContentByChannel = async (channel, startPageSize = -5) => {
   //   console.log("Found cached posts.");
   // } else {
   const sheets = getSheets();
-  const response = await sheets.spreadsheets.values.get({
+  const params = {
     spreadsheetId: process.env.SPREADSHEET_ID,
     range: channel,
-  });
+  };
+  const response = await sheets.spreadsheets.values.get(params);
   const rows = response.data.values;
 
   if (rows) {
@@ -118,24 +120,18 @@ export const getRemainPost = async (channel, pageSize = -16) => {
 
 //まずはじめの投稿を何かを取得する作戦
 // はじめの投稿と取得した10件ターンとで重複があったらreadmoreボタンを非表示にする
-export const getFirstPost = async (channel, pageSize = 1) => {
+export const getFirstPost = async (channel) => {
   const sheets = getSheets();
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SPREADSHEET_ID,
     range: channel,
   });
   const rows = response.data.values;
-  if (rows) {
-    return rows.slice(0, pageSize).map((row) => {
-      return {
-        date: row[0],
-        name: row[1],
-        post: row[2],
-      };
-    });
+  if (!rows.length) {
+    return null;
   }
 
-  return [];
+  return _buildContent(rows[0]);
 };
 
 // 10ずつ取得できる数式を入れたい.....
