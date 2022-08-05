@@ -49,7 +49,7 @@ export const getContentByChannel = async (channel, startPageSize = -5) => {
   };
   const response = await sheets.spreadsheets.values.get(params);
   const rows = response.data.values;
-  console.log(_contentLength(rows));
+  console.log("***** 投稿件数___" + _contentLength(rows) + "件もある〜");
   if (rows) {
     return rows.slice(startPageSize).map((item) => _buildContent(item));
   }

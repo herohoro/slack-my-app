@@ -95,7 +95,7 @@ export default function RenderContent({
                     </li>
                   );
                 })}
-                {console.log("GET!!!____chennel")}
+                {console.log("終了!!!____chennel")}
               </ul>
             </div>
           </div>
@@ -116,7 +116,11 @@ export default function RenderContent({
 
                 {/* 先頭を含まないターンでは戻るボタンを押したら続きが10件追加されるようにしたい */}
                 {/* {content.length <= 10 ? null : <button>readmore!!!</button>} */}
-                {console.log(content.length)}
+                {console.log(
+                  "***** 今表示できている投稿件数___" +
+                    content.length +
+                    "件だけ"
+                )}
                 {/* 裏で既に全件数取得できていないと10件以上続きがあるかどうかは不明のまま */}
                 <button type="button">Read more!!</button>
 
@@ -135,7 +139,7 @@ export default function RenderContent({
                   );
                 })}
                 {/* 末尾を含まないターンでは次ボタンを押されたら10件追加したい */}
-                {console.log("GET!!!____content")}
+                {console.log("終了!!!____content")}
               </div>
             </div>
           </div>
