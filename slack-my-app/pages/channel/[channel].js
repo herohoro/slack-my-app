@@ -3,6 +3,7 @@ import {
   getContentByChannel,
   // getReadmoreContent,
   getFirstPost,
+  Index,
   // cacheTest,
   // getPartPost,
   // getRemainPost,
@@ -23,21 +24,22 @@ export async function getStaticPaths() {
 }
 // cacheTestを読み込むとエラーになる
 export async function getStaticProps({ params: { channel } }) {
-  const content = await getContentByChannel(channel);
+  // const content = await getContentByChannel(channel);
+  const content = await Index(channel);
   // const readmore = await getReadmoreContent(channel);
   const first = await getFirstPost(channel);
   // const part = await getFirstPost(channel, startPageSize, pageSize);
   // const remain = await getRemainPost(channel, pageSize);
 
-  if (!content) {
-    console.log(`Failed to find post for channel: ${channel}`);
-    return {
-      props: {
-        redirect: "/channel",
-      },
-      revalidate: 30,
-    };
-  }
+  // if (!content) {
+  //   console.log(`Failed to find post for channel: ${channel}`);
+  //   return {
+  //     props: {
+  //       redirect: "/channel",
+  //     },
+  //     revalidate: 30,
+  //   };
+  // }
 
   const channels = await getChannels();
   // const cache = cacheTest();
@@ -116,15 +118,16 @@ export default function RenderContent({
 
                 {/* 先頭を含まないターンでは戻るボタンを押したら続きが10件追加されるようにしたい */}
                 {/* {content.length <= 10 ? null : <button>readmore!!!</button>} */}
-                {console.log(
+                {/* {console.log(
                   "***** 今表示できている投稿件数___" +
                     content.length +
                     "件だけ"
-                )}
+                )} */}
                 {/* 裏で既に全件数取得できていないと10件以上続きがあるかどうかは不明のまま */}
                 <button type="button">Read more!!</button>
 
-                {content.map((post) => {
+                {content}
+                {/* {content.map((post) => {
                   // console.log(content);
                   return (
                     <div className={styles.post}>
@@ -134,10 +137,10 @@ export default function RenderContent({
                         <p>{post.date}</p>
                       </div>
                       <p className={styles.textContent}>{post.post}</p>
-                      {/* {console.log(post)} */}
+                      {console.log(post)}
                     </div>
                   );
-                })}
+                })} */}
                 {/* 末尾を含まないターンでは次ボタンを押されたら10件追加したい */}
                 {console.log("終了!!!____content")}
               </div>

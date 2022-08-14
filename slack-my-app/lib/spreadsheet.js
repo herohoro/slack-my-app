@@ -35,8 +35,8 @@ const channels = async () => {
 };
 export const getChannels = channels;
 
-//仮で末尾10件取得して画面遷移を早くさせる
-export const getContentByChannel = async (channel, startPageSize = -5) => {
+//仮で全て取得することにする。
+export const getContentByChannel = async (channel, startPageSize = 0) => {
   // if (postIndexCache.exists()) {
   //   // キャッシュがある場合に参照する
   //   results = postIndexCache.get();
@@ -73,53 +73,86 @@ function _buildContent(item, id) {
   return content;
 }
 
-// little-render_02：-15から-6を取得
-export const getPartPost = async (
-  channel,
-  startPageSize = -15,
-  pageSize = -6
-) => {
-  const sheets = getSheets();
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SPREADSHEET_ID,
-    range: channel,
-  });
-  const rows = response.data.values;
-  if (rows) {
-    return rows.slice(startPageSize, pageSize).map((row, id) => {
-      // console.log(row);
-      return {
-        id: id + 1,
-        date: row[0],
-        name: row[1],
-        post: row[2],
-      };
-    });
+//無限スクロールを試すが上手く行かない。error:can't resolve 'child_process'
+import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
+
+export const Index = async (channel) => {
+  const [list, setList] = useState([]); //表示するデータ
+  const [hasMore, setHasMore] = useState(true); //再読み込み判定
+
+  //項目を読み込むときのコールバック
+  //pageは取得したクエリ：channelごとに変化するから....
+
+  const loadMore = async(channel, (startPageSize = 0));
+  {
+    // const response = await fetch(`http://localhost:3000/api/test?page=${page}`);  //API通信
+    const sheets = getSheets();
+    const params = {
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: channel,
+    };
+    const response = await sheets.spreadsheets.values.get(params);
+
+    // const data = await response.json();  //取得データ
+    const rows = response.data.values;
+    if (rows) {
+      return rows.slice(startPageSize).map((item) => _buildContent(item));
+    }
+
+    //データ件数が0件の場合、処理終了
+    if (rows.length < 1) {
+      setHasMore(false);
+      return;
+    }
+    //取得データをリストに追加
+    //data==rowsだから....
+    setList([...list, ...rows]);
   }
 
-  return [];
-  // }
-};
+  //各スクロール要素
+  // content=list, post=valueとして考えると....
+  const items = (
+    <>
+      {list.map((value) => (
+        <div className={styles.post}>
+          <p>{value.id}</p>
+          <div className={styles.textcols}>
+            <p>{value.name}</p>
+            <p>{value.date}</p>
+          </div>
+          <p className={styles.textContent}>{value.post}</p>
+        </div>
+      ))}
+    </>
+  );
 
-// little-render_04：0から-16までを取得
-export const getRemainPost = async (channel, pageSize = -16) => {
-  const sheets = getSheets();
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SPREADSHEET_ID,
-    range: channel,
-  });
-  const rows = response.data.values;
-  if (rows) {
-    return rows.slice(0, pageSize).map((row) => {
-      return {
-        date: row[0],
-        name: row[1],
-        post: row[2],
-      };
-    });
-  }
+  //全体のスタイル
+  const root_style = {
+    marginLeft: "50px",
+    marginTop: "50px",
+  };
 
-  return [];
+  //ロード中に表示する項目
+  const loader = (
+    <div className="loader" key={0}>
+      Loading ...
+    </div>
+  );
+
+  return (
+    <div style={root_style}>
+      <InfiniteScroll
+        loadMore={loadMore} //項目を読み込む際に処理するコールバック関数
+        hasMore={hasMore} //読み込みを行うかどうかの判定
+        loader={loader}
+      >
+        {" "}
+        {/* 読み込み最中に表示する項目 */}
+        {items} {/* 無限スクロールで表示する項目 */}
+      </InfiniteScroll>
+    </div>
+  );
 };
 
 //まずはじめの投稿を何かを取得する作戦
@@ -163,56 +196,58 @@ export const getFirstPost = async (channel) => {
 //   }
 //   return [];
 // };
-export const cacheTest = () => {
-  const channels = async () => {
-    const sheets = getSheets();
-    const rangeName = "B2:C";
-    const sheetsName = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      range: rangeName,
-    });
-    const rows = sheetsName.data.values;
-    // console.log(rows);
-    if (rows) {
-      return rows
-        .slice(1)
-        .sort()
-        .filter((name) => name[1] !== "TRUE" && name[0] !== "")
-        .map((row) => {
-          return row[0];
-        });
-    }
 
-    return [].map((channel) => _content(channel));
-  };
-  // チャンネル１件ずつ取り出す
-  let allChannelContent = [];
-  const _content = async (channel) => {
-    const sheets = getSheets();
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: channel,
-    });
-    const rows = response.data.values;
+//キャッシュは失敗中
+// export const cacheTest = () => {
+//   const channels = async () => {
+//     const sheets = getSheets();
+//     const rangeName = "B2:C";
+//     const sheetsName = await sheets.spreadsheets.values.get({
+//       spreadsheetId: process.env.SPREADSHEET_ID,
+//       range: rangeName,
+//     });
+//     const rows = sheetsName.data.values;
+//     // console.log(rows);
+//     if (rows) {
+//       return rows
+//         .slice(1)
+//         .sort()
+//         .filter((name) => name[1] !== "TRUE" && name[0] !== "")
+//         .map((row) => {
+//           return row[0];
+//         });
+//     }
 
-    if (rows) {
-      return rows.slice().map((row, id) => {
-        return {
-          id: id + 1,
-          date: row[0],
-          name: row[1],
-          post: row[2],
-        };
-      });
-    }
-    return [];
-  };
-  // 各チャンネル内にある投稿内容は配列[]になってまとまっているがチャンネル間はまとめられていない。。。
-  allChannelContent = allChannelContent.concat(channels);
-  console.log(allChannelContent);
-  //   fs.writeFileSync(POST_INDEX_CACHE, JSON.stringify(allChannelContent));
-  //   console.log(
-  //     `Cached ${allChannelContent.length} posts into ${POST_INDEX_CACHE}`
-  //   );
-  return;
-};
+//     return [].map((channel) => _content(channel));
+//   };
+//   // チャンネル１件ずつ取り出す
+//   let allChannelContent = [];
+//   const _content = async (channel) => {
+//     const sheets = getSheets();
+//     const response = await sheets.spreadsheets.values.get({
+//       spreadsheetId: SPREADSHEET_ID,
+//       range: channel,
+//     });
+//     const rows = response.data.values;
+
+//     if (rows) {
+//       return rows.slice().map((row, id) => {
+//         return {
+//           id: id + 1,
+//           date: row[0],
+//           name: row[1],
+//           post: row[2],
+//         };
+//       });
+//     }
+//     return [];
+//   };
+//   // 各チャンネル内にある投稿内容は配列[]になってまとまっているがチャンネル間はまとめられていない。。。
+//   allChannelContent = allChannelContent.concat(channels);
+//   console.log(allChannelContent);
+//   //   fs.writeFileSync(POST_INDEX_CACHE, JSON.stringify(allChannelContent));
+//   //   console.log(
+//   //     `Cached ${allChannelContent.length} posts into ${POST_INDEX_CACHE}`
+//   //   );
+//   return;
+// };
