@@ -1,12 +1,12 @@
+// 無限スクロールの実装になったらコメントアウトを無くす。
 import "../styles/globals.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../component/loading";
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }) {
-  
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(false);
 
@@ -29,12 +29,12 @@ function MyApp({ Component, pageProps }) {
   const loadingComponent = <Loading />;
 
   return (
-    <QueryClientProvider client={queryClient}>
+    // <QueryClientProvider client={queryClient}>
     <div>
       {pageLoading && loadingComponent}
       <Component {...pageProps} />
     </div>
-    </QueryClientProvider>
+    // </QueryClientProvider>
   );
 }
 export default MyApp;
