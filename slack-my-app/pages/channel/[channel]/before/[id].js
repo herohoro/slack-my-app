@@ -1,5 +1,8 @@
-import { getChannels, getPostsByChannel } from "../../lib/spreadsheet";
-import styles from "../../styles/Home.module.css";
+import {
+  getChannels,
+  getPostsByChannelBefore,
+} from "../../../../lib/spreadsheet";
+import styles from "../../../../styles/Home.module.css";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,20 +12,19 @@ export async function getStaticPaths() {
   const channels = await getChannels();
 
   return {
-    paths: channels.map((channel) => `/channel/${encodeURIComponent(channel)}`),
+    paths: [],
     fallback: "blocking",
   };
 }
 // cacheTestを読み込むとエラーになる
-export async function getStaticProps({ params: { channel } }) {
-  const posts = await getPostsByChannel(channel);
-  // const content = await Index(channel);
+export async function getStaticProps({ params: { channel, id } }) {
+  const posts = await getPostsByChannelBefore(channel, id, 10);
 
   if (!posts.length === 0) {
-    console.log(`Failed to find post for channel: ${channel}`);
+    console.log(`Failed to find post for channel: ${channel}_${id}`);
     return {
       props: {
-        redirect: "/",
+        redirect: "/channel",
       },
       revalidate: 30,
     };
@@ -33,15 +35,16 @@ export async function getStaticProps({ params: { channel } }) {
   return {
     props: {
       posts,
+
       channels,
     },
     revalidate: 60,
   };
 }
-export default function RenderContent({ posts, channels }) {
+export default function RenderPostsByChannelBeforeId({ posts, channels }) {
   const router = useRouter();
   const activeName = decodeURI(router.asPath).substring(
-    decodeURI(router.asPath).lastIndexOf("/") + 1
+    decodeURI(router.asPath).indexOf("/", 1)
   );
 
   return (
@@ -56,12 +59,10 @@ export default function RenderContent({ posts, channels }) {
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
-                {channels.map((channel, id) => {
+                {/* {console.log({ channels })} */}
+                {channels.map((channel) => {
                   return (
-                    <li
-                      className={activeName === channel ? "active" : null}
-                      key={id}
-                    >
+                    <li className={activeName === channel ? "active" : null}>
                       <Link
                         href="/channel/[channel]"
                         as={`/channel/${channel}`}
@@ -69,6 +70,8 @@ export default function RenderContent({ posts, channels }) {
                       >
                         <a>{channel}</a>
                       </Link>
+
+                      {/* {console.log(channel)} */}
                     </li>
                   );
                 })}
@@ -81,6 +84,7 @@ export default function RenderContent({ posts, channels }) {
             {/* {cache} */}
             <div className={styles.scroll}>
               <div>
+                {/* {content} */}
                 {posts.map((post) => {
                   // console.log(content);
                   return (
@@ -91,9 +95,11 @@ export default function RenderContent({ posts, channels }) {
                         <p>{post.date}</p>
                       </div>
                       <p className={styles.textContent}>{post.post}</p>
+                      {/* {console.log(post)} */}
                     </div>
                   );
                 })}
+                {/* 末尾を含まないターンでは次ボタンを押されたら10件追加したい */}
                 {console.log("終了!!!____content")}
               </div>
             </div>
