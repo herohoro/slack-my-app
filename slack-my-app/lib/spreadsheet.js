@@ -45,13 +45,10 @@ export const getPostsByChannel = async (channel) => {
   const response = await sheets.spreadsheets.values.get(params);
   const rows = response.data.values;
   results = results.concat(rows);
-  console.log("出だし10件のraws" + results);
+  // console.log("出だし10件のraws" + results);
   console.log("***** 投稿件数___" + _contentLength(rows) + "件もある〜");
   if (results) {
-    console.log(
-      "出だし10件のretrun " +
-        results.slice(0, 10).map((item, id) => _buildContent(item, id))
-    );
+    console.log("出だし10件のretrun ");
     return results.slice(0, 10).map((item, id) => _buildContent(item, id));
   }
 
@@ -69,12 +66,12 @@ const getAllPostsByChannel = async (channel) => {
   const rows = response.data.values;
   results = results.concat(rows);
   // console.log(results);
-  console.log("***** 投稿件数___" + _contentLength(rows) + "件もある〜");
+  console.log("***** 全投稿件数___" + _contentLength(rows) + "件もある〜");
   if (results) {
-    console.log(
-      "getAllPostsByCannel **** " +
-        results.slice(0).map((item, id) => _buildContent(item, id))
-    );
+    // console.log(
+    //   "getAllPostsByCannel **** " +
+    //     results.slice(0).map((item, id) => _buildContent(item, id))
+    // );
     return results.slice(0).map((item, id) => _buildContent(item, id));
   }
 
@@ -123,88 +120,28 @@ export async function getPostsByChannelBefore(channel, id, pageSize = 10) {
 export const getChannelBeforeLink = (channel, id) => {
   return `/channel/${encodeURIComponent(channel)}/before/${id}`;
 };
-
-//無限スクロールを試すが上手く行かない。error:can't resolve 'child_process'
-import { useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
-
-export const Index = async (channel) => {
-  const [list, setList] = useState([]); //表示するデータ
-  const [hasMore, setHasMore] = useState(true); //再読み込み判定
-
-  //項目を読み込むときのコールバック
-  //pageは取得したクエリ：channelごとに変化するから....
-
-  const loadMore = async(channel, (startPageSize = 0));
-  {
-    // const response = await fetch(`http://localhost:3000/api/test?page=${page}`);  //API通信
-    const sheets = getSheets();
-    const params = {
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      range: channel,
-    };
-    const response = await sheets.spreadsheets.values.get(params);
-
-    // const data = await response.json();  //取得データ
-    const rows = response.data.values;
-    if (rows) {
-      return rows.slice(startPageSize).map((item) => _buildContent(item));
-    }
-
-    //データ件数が0件の場合、処理終了
-    if (rows.length < 1) {
-      setHasMore(false);
-      return;
-    }
-    //取得データをリストに追加
-    //data==rowsだから....
-    setList([...list, ...rows]);
-  }
-
-  //各スクロール要素
-  // content=list, post=valueとして考えると....
-  const items = (
-    <>
-      {list.map((value) => (
-        <div className={styles.post}>
-          <p>{value.id}</p>
-          <div className={styles.textcols}>
-            <p>{value.name}</p>
-            <p>{value.date}</p>
-          </div>
-          <p className={styles.textContent}>{value.post}</p>
-        </div>
-      ))}
-    </>
+// fetchリンクに習って1件取得する
+export async function getPostByChannelBeforeOne(channel, id, pageSize = 1) {
+  const allPosts = await getAllPostsByChannel(channel);
+  console.log("今のid **** " + id);
+  const Min_posts = Number(id);
+  const Max_posts = Number(id) + 1;
+  console.log(Min_posts);
+  console.log(Max_posts);
+  console.log(
+    "10件ずつ小出し " +
+      allPosts
+        .filter(
+          (post) => Number(post.id) < Max_posts && Number(post.id) >= Min_posts
+        )
+        .slice(0, pageSize)
   );
-
-  //全体のスタイル
-  const root_style = {
-    marginLeft: "50px",
-    marginTop: "50px",
-  };
-
-  //ロード中に表示する項目
-  const loader = (
-    <div className="loader" key={0}>
-      Loading ...
-    </div>
-  );
-
-  return (
-    <div style={root_style}>
-      <InfiniteScroll
-        loadMore={loadMore} //項目を読み込む際に処理するコールバック関数
-        hasMore={hasMore} //読み込みを行うかどうかの判定
-        loader={loader}
-      >
-        {" "}
-        {/* 読み込み最中に表示する項目 */}
-        {items} {/* 無限スクロールで表示する項目 */}
-      </InfiniteScroll>
-    </div>
-  );
-};
+  return allPosts
+    .filter(
+      (post) => Number(post.id) < Max_posts && Number(post.id) >= Min_posts
+    )
+    .slice(0, pageSize);
+}
 
 //まずはじめの投稿を何かを取得する作戦
 // はじめの投稿と取得した10件ターンとで重複があったらreadmoreボタンを非表示にする

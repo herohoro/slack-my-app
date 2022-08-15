@@ -3,6 +3,7 @@ import styles from "../../styles/Home.module.css";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+// import Posts from "../../components/posts";
 
 // 今はコンポネントしないで記述する。
 export async function getStaticPaths() {
@@ -81,8 +82,9 @@ export default function RenderContent({ posts, channels }) {
             {/* {cache} */}
             <div className={styles.scroll}>
               <div>
-                {posts.map((post) => {
-                  // console.log(content);
+                {/* <Posts channel={activeName} /> */}
+                {posts.map((post, key) => {
+                  console.log(key);
                   return (
                     <div className={styles.post}>
                       <p>{post.id}</p>
