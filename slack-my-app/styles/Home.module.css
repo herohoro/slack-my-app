@@ -25,7 +25,12 @@
 .textContent {
   margin-left: 20px;
 }
-
+.loading {
+  z-index: 2;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+}
 .main {
   /* min-height: 100vh; */
   flex: 1;
