@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
 import { getChannels } from "../lib/spreadsheet";
-
+import Posts from "../components/posts";
 export async function getStaticProps() {
   const channels = await getChannels();
   return {
@@ -26,7 +26,6 @@ export default function Home({ channels }) {
           })}
         </script> */}
       </Head>
-
       <main>
         <div className={styles.wrapper}>
           <div className={styles.sidebar}>
@@ -53,10 +52,12 @@ export default function Home({ channels }) {
           </div>
           <div className={styles.main}>
             <div className={styles.header}># 000_皆さんへ</div>
+            <Posts />
             <div className={styles.scroll}>
               <div>
                 <p>左のメニューからチャンネルを選んでください</p>
               </div>
+              <Posts />
             </div>
           </div>
         </div>
