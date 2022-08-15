@@ -1,4 +1,8 @@
-import { getChannels, getPostsByChannel } from "../../lib/spreadsheet";
+import {
+  getChannels,
+  getPostsBack,
+  // getChannelBeforeLink,
+} from "../../lib/spreadsheet";
 import styles from "../../styles/Home.module.css";
 import Head from "next/head";
 import Link from "next/link";
@@ -16,8 +20,7 @@ export async function getStaticPaths() {
 }
 // cacheTestを読み込むとエラーになる
 export async function getStaticProps({ params: { channel } }) {
-  const posts = await getPostsByChannel(channel);
-  // const content = await Index(channel);
+  const posts = await getPostsBack(channel);
 
   if (!posts.length === 0) {
     console.log(`Failed to find post for channel: ${channel}`);
@@ -80,6 +83,14 @@ export default function RenderContent({ posts, channels }) {
           <div className={styles.main}>
             <div className={styles.header}>{activeName}</div>
             {/* {cache} */}
+            <Link
+              href="/channel/[channel]/before/[id]"
+              // as={getChannelBeforeLink(activeName, 0)}
+              as={`/channel/${encodeURIComponent(activeName)}/before/${0}`}
+              passHref
+            >
+              <a>Old ↑</a>
+            </Link>
             <div className={styles.scroll}>
               <div>
                 {/* <Posts channel={activeName} /> */}

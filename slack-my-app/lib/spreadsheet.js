@@ -34,7 +34,19 @@ const channels = async () => {
   return [];
 };
 export const getChannels = channels;
-//出だし10件表示する
+//出だし10件表示する_最新から遡る
+export async function getPostsBack(channel, id = 0, pageSize = 10) {
+  const allPosts = await getAllPostsByChannel(channel);
+  console.log("今のid **** " + id);
+  const Min_posts = (Number(id) + 1) * -10;
+  const Max_posts = Number(id);
+  console.log(Min_posts);
+  console.log(Max_posts);
+  console.log("最新10件出し " + allPosts.slice(-10));
+  return allPosts.slice(-10);
+}
+
+// 無限スクロールにする時はslice部分を修正する
 export const getPostsByChannel = async (channel) => {
   let results = [];
   const sheets = getSheets();
@@ -94,6 +106,18 @@ function _buildContent(item, id) {
   console.log("*** buildContent  " + post.id + post);
   return post;
 }
+// さかのぼり10件ずつの小出し
+export async function getPostsByChannelBack(channel, id) {
+  const allPosts = await getAllPostsByChannel(channel);
+  console.log("今のid **** " + id);
+  const Min_posts = (Number(id) + 2) * -10;
+  const Max_posts = (Number(id) + 1) * -10;
+  console.log(Min_posts);
+  console.log(Max_posts);
+  console.log("10件ずつ小出し " + allPosts.slice(Min_posts, Max_posts));
+  return allPosts.slice(Min_posts, Max_posts);
+}
+
 // 10件ずつ小出しにする
 export async function getPostsByChannelBefore(channel, id, pageSize = 10) {
   const allPosts = await getAllPostsByChannel(channel);
@@ -118,8 +142,9 @@ export async function getPostsByChannelBefore(channel, id, pageSize = 10) {
 }
 //idによるパスを作ってページを当てる
 export const getChannelBeforeLink = (channel, id) => {
-  return `/channel/${encodeURIComponent(channel)}/before/${id}`;
+  return `/channel/${encodeURIComponent(channel)}/before/${Number(id) + 1}`;
 };
+
 // fetchリンクに習って1件取得する
 export async function getPostByChannelBeforeOne(channel, id, pageSize = 1) {
   const allPosts = await getAllPostsByChannel(channel);

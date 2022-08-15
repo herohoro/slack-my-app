@@ -1,6 +1,7 @@
 import {
   getChannels,
-  getPostsByChannelBefore,
+  getPostsByChannelBack,
+  // getChannelBeforeLink,
 } from "../../../../lib/spreadsheet";
 import styles from "../../../../styles/Home.module.css";
 import Head from "next/head";
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
 }
 // cacheTestを読み込むとエラーになる
 export async function getStaticProps({ params: { channel, id } }) {
-  const posts = await getPostsByChannelBefore(channel, id, 10);
+  const posts = await getPostsByChannelBack(channel, id);
 
   if (!posts.length === 0) {
     console.log(`Failed to find post for channel: ${channel}_${id}`);
@@ -36,17 +37,19 @@ export async function getStaticProps({ params: { channel, id } }) {
   return {
     props: {
       posts,
-
+      id,
       channels,
     },
     revalidate: 60,
   };
 }
-export default function RenderPostsByChannelBeforeId({ posts, channels }) {
+export default function RenderPostsByChannelBeforeId({ posts, id, channels }) {
   const router = useRouter();
-  const activeName = decodeURI(router.asPath).substring(
-    decodeURI(router.asPath).indexOf("/", 1)
+  const currentName = decodeURI(router.asPath).substring(
+    decodeURI(router.asPath).lastIndexOf("/", 8) + 1
   );
+  const pageNum = currentName.split("/")[2];
+  const activeName = currentName.split("/")[0];
 
   return (
     <div className={styles.container}>
@@ -71,8 +74,6 @@ export default function RenderPostsByChannelBeforeId({ posts, channels }) {
                       >
                         <a>{channel}</a>
                       </Link>
-
-                      {/* {console.log(channel)} */}
                     </li>
                   );
                 })}
@@ -81,14 +82,32 @@ export default function RenderPostsByChannelBeforeId({ posts, channels }) {
             </div>
           </div>
           <div className={styles.main}>
-            <div className={styles.header}>{activeName}</div>
+            <div className={styles.header}>
+              {activeName + ":  " + (Number(pageNum) + 2) + " page"}
+            </div>
             {/* {cache} */}
+            <Link
+              href="/channel/[channel]/before/[id]"
+              as={`/channel/${encodeURIComponent(activeName)}/before/${
+                Number(id) + 1
+              }`}
+              //コンポにするとなぜかエラー
+              // as={getChannelBeforeLink(
+              //   (channel = { activeName }),
+              //   (id = { id })
+              // )}
+              passHref
+            >
+              <a>Old ↑</a>
+            </Link>
+            <>
+              <a onClick={() => router.back()}>↓ New</a>
+            </>
             <div className={styles.scroll}>
               <div>
-                {/* {content} */}
-
+                {console.log(id)}
+                {console.log(activeName)}
                 {posts.map((post) => {
-                  // console.log(content);
                   return (
                     <div className={styles.post}>
                       <p>{post.id}</p>
@@ -97,11 +116,9 @@ export default function RenderPostsByChannelBeforeId({ posts, channels }) {
                         <p>{post.date}</p>
                       </div>
                       <p className={styles.textContent}>{post.post}</p>
-                      {/* {console.log(post)} */}
                     </div>
                   );
                 })}
-                {/* 末尾を含まないターンでは次ボタンを押されたら10件追加したい */}
                 {console.log("終了!!!____content")}
               </div>
             </div>
