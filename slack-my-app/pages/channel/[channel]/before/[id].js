@@ -1,32 +1,32 @@
 import {
   getChannels,
-  getPostsBack,
+  getPostsByChannelBack,
   // getChannelBeforeLink,
-} from "../../lib/spreadsheet";
-import styles from "../../styles/Home.module.css";
+} from "../../../../lib/spreadsheet";
+import styles from "../../../../styles/Home.module.css";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-// import Posts from "../../components/posts";
+// import Posts from "../../../../components/posts";
 
 // 今はコンポネントしないで記述する。
 export async function getStaticPaths() {
   const channels = await getChannels();
 
   return {
-    paths: channels.map((channel) => `/channel/${encodeURIComponent(channel)}`),
+    paths: [],
     fallback: "blocking",
   };
 }
 // cacheTestを読み込むとエラーになる
-export async function getStaticProps({ params: { channel } }) {
-  const posts = await getPostsBack(channel);
+export async function getStaticProps({ params: { channel, id } }) {
+  const posts = await getPostsByChannelBack(channel, id);
 
   if (!posts.length === 0) {
-    console.log(`Failed to find post for channel: ${channel}`);
+    console.log(`Failed to find post for channel: ${channel}_${id}`);
     return {
       props: {
-        redirect: "/",
+        redirect: "/channel",
       },
       revalidate: 30,
     };
@@ -37,16 +37,19 @@ export async function getStaticProps({ params: { channel } }) {
   return {
     props: {
       posts,
+      id,
       channels,
     },
     revalidate: 60,
   };
 }
-export default function RenderContent({ posts, channels }) {
+export default function RenderPostsByChannelBeforeId({ posts, id, channels }) {
   const router = useRouter();
-  const activeName = decodeURI(router.asPath).substring(
-    decodeURI(router.asPath).lastIndexOf("/") + 1
+  const currentName = decodeURI(router.asPath).substring(
+    decodeURI(router.asPath).lastIndexOf("/", 8) + 1
   );
+  const pageNum = currentName.split("/")[2];
+  const activeName = currentName.split("/")[0];
 
   return (
     <div className={styles.container}>
@@ -60,12 +63,10 @@ export default function RenderContent({ posts, channels }) {
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
-                {channels.map((channel, id) => {
+                {/* {console.log({ channels })} */}
+                {channels.map((channel) => {
                   return (
-                    <li
-                      className={activeName === channel ? "active" : null}
-                      key={id}
-                    >
+                    <li className={activeName === channel ? "active" : null}>
                       <Link
                         href="/channel/[channel]"
                         as={`/channel/${channel}`}
@@ -81,21 +82,32 @@ export default function RenderContent({ posts, channels }) {
             </div>
           </div>
           <div className={styles.main}>
-            <div className={styles.header}>{activeName}</div>
+            <div className={styles.header}>
+              {activeName + ":  " + (Number(pageNum) + 2) + " page"}
+            </div>
             {/* {cache} */}
             <Link
               href="/channel/[channel]/before/[id]"
-              // as={getChannelBeforeLink(activeName, 0)}
-              as={`/channel/${encodeURIComponent(activeName)}/before/${0}`}
+              as={`/channel/${encodeURIComponent(activeName)}/before/${
+                Number(id) + 1
+              }`}
+              //コンポにするとなぜかエラー
+              // as={getChannelBeforeLink(
+              //   (channel = { activeName }),
+              //   (id = { id })
+              // )}
               passHref
             >
               <a>Old ↑</a>
             </Link>
+            <>
+              <a onClick={() => router.back()}>↓ New</a>
+            </>
             <div className={styles.scroll}>
               <div>
-                {/* <Posts channel={activeName} /> */}
-                {posts.map((post, key) => {
-                  console.log(key);
+                {console.log(id)}
+                {console.log(activeName)}
+                {posts.map((post) => {
                   return (
                     <div className={styles.post}>
                       <p>{post.id}</p>

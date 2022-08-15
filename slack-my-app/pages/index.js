@@ -18,21 +18,12 @@ export default function Home({ channels }) {
       <Head>
         <title>Spreadsheet CMS</title>
         <meta name="description" content="Next.js Spreadsheet CMS" />
-        {/* <script>
-          if (typeof window === "object")
-          {window.addEventListener("DOMContentLoaded", () => {
-            let target = document.getElementById("scrollInner");
-            target.scrollIntoView(false);
-          })}
-        </script> */}
       </Head>
-
       <main>
         <div className={styles.wrapper}>
           <div className={styles.sidebar}>
             <div className={styles.scroll}>
               <ul>
-                {/* {console.log({ channels })} */}
                 {channels.map((channel, id) => {
                   return (
                     <li key={id}>
@@ -43,8 +34,6 @@ export default function Home({ channels }) {
                       >
                         <a>{channel}</a>
                       </Link>
-
-                      {/* {console.log(id + "::" + channel)} */}
                     </li>
                   );
                 })}
@@ -53,6 +42,7 @@ export default function Home({ channels }) {
           </div>
           <div className={styles.main}>
             <div className={styles.header}># 000_皆さんへ</div>
+
             <div className={styles.scroll}>
               <div>
                 <p>左のメニューからチャンネルを選んでください</p>

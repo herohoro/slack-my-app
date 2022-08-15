@@ -1,13 +1,12 @@
 import "../styles/globals.css";
-// はじめからあったコード：
-// function MyApp({ Component, pageProps }) {
-//   return <Component {...pageProps} />
-// }
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../component/loading";
 
+const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }) {
+  
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(false);
 
@@ -30,10 +29,12 @@ function MyApp({ Component, pageProps }) {
   const loadingComponent = <Loading />;
 
   return (
+    <QueryClientProvider client={queryClient}>
     <div>
       {pageLoading && loadingComponent}
       <Component {...pageProps} />
     </div>
+    </QueryClientProvider>
   );
 }
 export default MyApp;
