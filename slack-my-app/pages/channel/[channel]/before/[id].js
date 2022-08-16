@@ -64,9 +64,12 @@ export default function RenderPostsByChannelBeforeId({ posts, id, channels }) {
             <div className={styles.scroll}>
               <ul>
                 {/* {console.log({ channels })} */}
-                {channels.map((channel) => {
+                {channels.map((channel, id) => {
                   return (
-                    <li className={activeName === channel ? "active" : null}>
+                    <li
+                      className={activeName === channel ? "active" : null}
+                      key={id}
+                    >
                       <Link
                         href="/channel/[channel]"
                         as={`/channel/${channel}`}
@@ -86,25 +89,26 @@ export default function RenderPostsByChannelBeforeId({ posts, id, channels }) {
               {activeName + ":  " + (Number(pageNum) + 2) + " page"}
             </div>
             {/* {cache} */}
-            <Link
-              href="/channel/[channel]/before/[id]"
-              as={`/channel/${encodeURIComponent(activeName)}/before/${
-                Number(id) + 1
-              }`}
-              //コンポにするとなぜかエラー
-              // as={getChannelBeforeLink(
-              //   (channel = { activeName }),
-              //   (id = { id })
-              // )}
-              passHref
-            >
-              <a>Old ↑</a>
-            </Link>
-            <>
-              <a onClick={() => router.back()}>↓ New</a>
-            </>
+
             <div className={styles.scroll}>
               <div>
+                {posts.length >= 1 ? (
+                  <Link
+                    href="/channel/[channel]/before/[id]"
+                    as={`/channel/${encodeURIComponent(activeName)}/before/${
+                      Number(id) + 1
+                    }`}
+                    //コンポにするとなぜかエラー
+                    // as={getChannelBeforeLink(
+                    //   (channel = { activeName }),
+                    //   (id = { id })
+                    // )}
+                    passHref
+                  >
+                    <a className={styles.oldPage}>Old &uarr;</a>
+                  </Link>
+                ) : null}
+
                 {console.log(id)}
                 {console.log(activeName)}
                 {posts.map((post) => {
@@ -120,6 +124,11 @@ export default function RenderPostsByChannelBeforeId({ posts, id, channels }) {
                   );
                 })}
                 {console.log("終了!!!____content")}
+                <>
+                  <a className={styles.newPage} onClick={() => router.back()}>
+                    &darr; New
+                  </a>
+                </>
               </div>
             </div>
           </div>
