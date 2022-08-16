@@ -83,16 +83,30 @@ export default function RenderContent({ posts, channels }) {
           <div className={styles.main}>
             <div className={styles.header}>{activeName}</div>
             {/* {cache} */}
-            <Link
-              href="/channel/[channel]/before/[id]"
-              // as={getChannelBeforeLink(activeName, 0)}
-              as={`/channel/${encodeURIComponent(activeName)}/before/${0}`}
-              passHref
-            >
-              <a>Old ↑</a>
-            </Link>
+
             <div className={styles.scroll}>
               <div>
+                {posts.length >= 1 ? (
+                  <Link
+                    href="/channel/[channel]/before/[id]"
+                    as={`/channel/${encodeURIComponent(
+                      activeName
+                    )}/before/${0}`}
+                    //コンポにするとなぜかエラー
+                    // as={getChannelBeforeLink(activeName, 0)}
+                    passHref
+                  >
+                    <a className={styles.oldPage}>Old &uarr;</a>
+                  </Link>
+                ) : null}
+                {/* <Link
+                  href="/channel/[channel]/before/[id]"
+                  // as={getChannelBeforeLink(activeName, 0)}
+                  as={`/channel/${encodeURIComponent(activeName)}/before/${0}`}
+                  passHref
+                >
+                  <a className={styles.oldPage}>Old ↑</a>
+                </Link> */}
                 {/* <Posts channel={activeName} /> */}
                 {posts.map((post, key) => {
                   console.log(key);
