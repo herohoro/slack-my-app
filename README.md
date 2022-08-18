@@ -2,6 +2,8 @@ slackフリープランで90日以降に見れなくなってしまう過去の�
 
 <img width="1230" alt="スクリーンショット 2022-07-30 4 40 14" src="https://user-images.githubusercontent.com/24947347/181832576-ad59d2c7-62fd-43e6-8e5d-5eefa2704801.png">
 
+🔽 進捗状況をツイートしているスレッド  
+https://twitter.com/mineral_30/status/1551069699546685440
 # 改良版
 
 サンプルコードをコピペして作成した Google スプレッドシートから閲覧用に用意したスプレッドシートを無くして web アプリにしたものです。  
